@@ -10,6 +10,133 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ── SUPPORT BUTTON IN NAVBAR ── */
+    .nav-support-btn {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,.25);
+      color: rgba(255,255,255,.8);
+      font-family: Inter, sans-serif;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: border-color .2s, color .2s;
+      margin-left: 10px;
+    }
+    .nav-support-btn:hover { border-color: #fff; color: #fff; }
+
+    /* ── FLOATING SUPPORT BUTTON ── */
+    .float-support {
+      position: fixed;
+      bottom: 28px;
+      right: 24px;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #FF6B2B, #DC2626);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(220,38,38,.45);
+      transition: transform .2s, box-shadow .2s;
+      z-index: 900;
+    }
+    .float-support:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(220,38,38,.5); }
+    .float-support svg { width: 24px; height: 24px; fill: #fff; }
+
+    /* ── SUPPORT MODAL ── */
+    .sp-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .sp-overlay.open { display: flex; }
+    @keyframes spFadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .sp-modal {
+      background: #1c1c1e;
+      border: 1px solid #2e2e30;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 420px;
+      padding: 28px 24px;
+      animation: spFadeUp .3s ease;
+    }
+    .sp-modal h3 {
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .sp-subtitle { color: #888; font-size: .82rem; margin-bottom: 20px; }
+    .sp-close {
+      float: right;
+      background: none;
+      border: none;
+      color: #555;
+      font-size: 1.3rem;
+      cursor: pointer;
+      line-height: 1;
+      margin-top: -2px;
+    }
+    .sp-close:hover { color: #fff; }
+    .sp-options { display: flex; flex-direction: column; gap: 10px; }
+    .sp-option {
+      background: #252528;
+      border: 1px solid #333;
+      border-radius: 10px;
+      color: #ccc;
+      font-family: Inter, sans-serif;
+      font-size: .9rem;
+      padding: 13px 16px;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+    .sp-option:hover { border-color: #FF6B2B; background: #2a1f18; color: #fff; }
+    .sp-form { display: none; }
+    .sp-form.active { display: block; }
+    .sp-back {
+      background: none; border: none; color: #555;
+      font-size: .82rem; cursor: pointer; margin-bottom: 14px; padding: 0;
+      font-family: Inter, sans-serif;
+    }
+    .sp-back:hover { color: #aaa; }
+    .sp-form-title { color: #bbb; font-size: .9rem; margin-bottom: 12px; line-height: 1.5; }
+    .sp-textarea {
+      width: 100%; background: #252528; border: 1px solid #333;
+      border-radius: 8px; color: #ddd; font-family: Inter, sans-serif;
+      font-size: .9rem; padding: 12px 14px; resize: vertical;
+      min-height: 100px; outline: none;
+    }
+    .sp-textarea:focus { border-color: #FF6B2B; }
+    .sp-send {
+      width: 100%; background: linear-gradient(135deg, #FF6B2B, #DC2626);
+      border: none; border-radius: 8px; color: #fff;
+      font-family: Inter, sans-serif; font-size: .95rem; font-weight: 700;
+      padding: 13px; margin-top: 12px; cursor: pointer;
+      transition: opacity .2s;
+    }
+    .sp-send:hover { opacity: .88; }
+    .sp-success { display: none; text-align: center; }
+    .sp-success.active { display: block; }
+    .sp-success-icon { font-size: 2.4rem; margin-bottom: 12px; }
+    .sp-success h4 { color: #fff; font-size: 1rem; margin-bottom: 8px; }
+    .sp-success p { color: #888; font-size: .88rem; line-height: 1.65; }
+    .sp-success a { color: #FF6B2B; }
+  </style>
 </head>
 <body>
 
@@ -32,6 +159,7 @@
         </svg>
         <span class="topbar__title">Testofy</span>
       </div>
+      <button class="nav-support-btn" onclick="openSupport()">SUPPORT</button>
       <div class="topbar__progress-wrap" title="Overall progress">
         <div class="topbar__progress-ring">
           <svg width="36" height="36" viewBox="0 0 36 36">
@@ -170,5 +298,101 @@
 
   <script src="js/content.js"></script>
   <script src="js/app.js"></script>
+
+  <!-- FLOATING SUPPORT BUTTON -->
+  <button class="float-support" onclick="openSupport()" title="Support">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 1C7.032 1 3 5.032 3 10v1a4 4 0 0 0 4 4h1a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H5.07A7.003 7.003 0 0 1 12 3a7.003 7.003 0 0 1 6.93 5H17a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h1a4 4 0 0 0 4-4v-1c0-4.968-4.032-9-9-9zm-6 9h1v3H7a2 2 0 0 1-2-2v-.5a2 2 0 0 1 2-2v1.5zm10 3h-1V10h1a2 2 0 0 1 2 2v.5a2 2 0 0 1-2 2v-1.5zM12 21a3 3 0 0 1-3-3h2a1 1 0 0 0 2 0h2a3 3 0 0 1-3 3z"/>
+    </svg>
+  </button>
+
+  <!-- SUPPORT MODAL -->
+  <div class="sp-overlay" id="sp-overlay">
+    <div class="sp-modal">
+      <button class="sp-close" onclick="closeSupport()">✕</button>
+
+      <!-- Stage 1: Options -->
+      <div id="sp-stage-options">
+        <h3>How can we help you?</h3>
+        <p class="sp-subtitle">Select an option below</p>
+        <div class="sp-options">
+          <button class="sp-option" onclick="showSupportForm('problem')">🚨 I had a problem</button>
+          <button class="sp-option" onclick="showSupportForm('refund')">💳 I want to ask for a refund</button>
+          <button class="sp-option" onclick="showSupportForm('question')">❓ I have a question</button>
+          <button class="sp-option" onclick="showSupportForm('other')">💬 I need another kind of support</button>
+        </div>
+      </div>
+
+      <!-- Stage 2: Form -->
+      <div class="sp-form" id="sp-stage-form">
+        <button class="sp-back" onclick="goSupportBack()">← Back</button>
+        <p class="sp-form-title" id="sp-form-title"></p>
+        <textarea class="sp-textarea" id="sp-textarea" placeholder="Write here..."></textarea>
+        <button class="sp-send" onclick="sendSupport()">SEND</button>
+      </div>
+
+      <!-- Stage 3: Success -->
+      <div class="sp-success" id="sp-stage-success">
+        <div class="sp-success-icon" id="sp-success-icon">✅</div>
+        <h4 id="sp-success-title">Message sent!</h4>
+        <p id="sp-success-msg"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var spCurrentType = '';
+
+    function openSupport() {
+      document.getElementById('sp-overlay').classList.add('open');
+      goSupportBack();
+    }
+    function closeSupport() {
+      document.getElementById('sp-overlay').classList.remove('open');
+    }
+    function goSupportBack() {
+      document.getElementById('sp-stage-options').style.display = 'block';
+      document.getElementById('sp-stage-form').classList.remove('active');
+      document.getElementById('sp-stage-success').classList.remove('active');
+      document.getElementById('sp-textarea').value = '';
+    }
+    function showSupportForm(type) {
+      spCurrentType = type;
+      document.getElementById('sp-stage-options').style.display = 'none';
+      document.getElementById('sp-stage-success').classList.remove('active');
+      document.getElementById('sp-stage-form').classList.add('active');
+      var titles = {
+        problem:  'Please describe the problem you experienced:',
+        refund:   'Please tell us the reason for your refund request:',
+        question: 'What is your question?',
+        other:    'Please describe how we can help you:'
+      };
+      document.getElementById('sp-form-title').textContent = titles[type];
+      document.getElementById('sp-textarea').focus();
+    }
+    function sendSupport() {
+      var text = document.getElementById('sp-textarea').value.trim();
+      if (!text) { document.getElementById('sp-textarea').focus(); return; }
+      document.getElementById('sp-stage-form').classList.remove('active');
+      document.getElementById('sp-stage-options').style.display = 'none';
+      var success = document.getElementById('sp-stage-success');
+      success.classList.add('active');
+      if (spCurrentType === 'refund') {
+        document.getElementById('sp-success-icon').textContent = '💳';
+        document.getElementById('sp-success-title').textContent = 'Refund request received';
+        document.getElementById('sp-success-msg').innerHTML =
+          'You will be refunded within <strong style="color:#fff">7 business days</strong>.<br><br>' +
+          'If you have any other questions, contact us at:<br>' +
+          '<a href="mailto:SUPORTEAOCLIENTE0012@GMAIL.COM">SUPORTEAOCLIENTE0012@GMAIL.COM</a>';
+      } else {
+        document.getElementById('sp-success-icon').textContent = '✅';
+        document.getElementById('sp-success-title').textContent = 'Message sent!';
+        document.getElementById('sp-success-msg').textContent = 'Our team will get back to you as soon as possible.';
+      }
+    }
+    document.getElementById('sp-overlay').addEventListener('click', function(e) {
+      if (e.target === this) closeSupport();
+    });
+  </script>
 </body>
 </html>
